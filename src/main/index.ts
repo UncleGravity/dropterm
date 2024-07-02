@@ -69,7 +69,11 @@ function createWindow(): void {
       cols: 80,
       rows: 24,
       cwd: process.env.HOME,
-      env: process.env
+      env: {
+        ...process.env,
+        TERM: 'xterm-256color', // Ensure TERM is set correctly for xterm compatibility
+        LC_ALL: 'en_US.UTF-8' // Ensure locale settings are correct for Unicode support
+      }
     })
 
     const onDataListener = (data): void => {

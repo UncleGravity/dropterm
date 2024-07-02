@@ -31,7 +31,8 @@ const TerminalComponent = (): JSX.Element => {
       disableStdin: false,
       allowTransparency: true,
       fontFamily: '"MesloLGS NF", monospace',
-      fontSize: 13
+      fontSize: 13,
+      macOptionIsMeta: true
     })
     terminal.current.loadAddon(fitAddon)
     terminal.current.loadAddon(clipboardAddon)
