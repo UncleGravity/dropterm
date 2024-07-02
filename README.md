@@ -1,6 +1,11 @@
 # dropterm
 
-An Electron application with React and TypeScript
+Inspired by the classc drop-down terminals on Linux like Guake. Super simple Electron + Xterm.js based terminal. Only tested on macOS.
+
+- Toggle visibility by pressing `Command+Shift+/`. 
+- Terminal window coverts full right half of the screen.
+- Opens a new tmux session on startup called "DROPTERM"
+- OSC52 support (copy from tmux). 
 
 ## Recommended IDE Setup
 
