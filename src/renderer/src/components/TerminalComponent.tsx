@@ -1,11 +1,13 @@
 import { useEffect, useRef } from 'react'
 import { Terminal } from '@xterm/xterm'
 import { FitAddon } from '@xterm/addon-fit'
+import { ClipboardAddon } from '@xterm/addon-clipboard'
 import '@xterm/xterm/css/xterm.css'
 
 const TerminalComponent = (): JSX.Element => {
   const terminalRef = useRef(null)
   const fitAddon = new FitAddon()
+  const clipboardAddon = new ClipboardAddon()
   const terminal = useRef<Terminal | null>(null)
 
   useEffect(() => {
@@ -32,6 +34,7 @@ const TerminalComponent = (): JSX.Element => {
       fontSize: 13
     })
     terminal.current.loadAddon(fitAddon)
+    terminal.current.loadAddon(clipboardAddon)
     if (terminalRef.current) {
       terminal.current.open(terminalRef.current)
       terminal.current.focus() // Add this line to focus the terminal
@@ -48,7 +51,34 @@ const TerminalComponent = (): JSX.Element => {
     const handleTerminalData = (_, data): void => {
       console.log('terminal-data', data)
       if (terminal.current) {
-        terminal.current.write(data)
+        // Check if the data contains an OSC 52 sequence
+        if (data.startsWith('\u001B]52;')) {
+          // Attempt to extract the base64 encoded string
+          const base64Data = data.match(/\u001B\]52;.*?;([^\u0007]*)\u0007/)?.[1]
+          if (base64Data) {
+            try {
+              const decodedData = atob(base64Data)
+              console.log('Decoded OSC 52 Data:', decodedData)
+
+              // Write the decoded data to the clipboard
+              navigator.clipboard
+                .writeText(decodedData)
+                .then(() => {
+                  console.log('Clipboard updated with OSC 52 data.')
+                })
+                .catch((err) => {
+                  console.error('Failed to write to clipboard:', err)
+                })
+            } catch (err) {
+              console.error('Error decoding base64 data:', err)
+            }
+          } else {
+            console.error('No base64 data found in OSC 52 sequence.')
+          }
+        } else {
+          // Normal data processing
+          terminal.current.write(data)
+        }
       }
     }
 
@@ -62,7 +92,8 @@ const TerminalComponent = (): JSX.Element => {
     window.addEventListener('resize', handleResize)
     handleResize()
 
-    return (): void => { // Specify return type as void
+    return (): void => {
+      // Specify return type as void
       if (terminal.current) {
         terminal.current.dispose()
       }
