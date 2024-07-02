@@ -60,7 +60,9 @@ function createWindow(): void {
 
     // Terminal setup
     const shellPath = process.platform === 'win32' ? 'powershell.exe' : 'zsh'
-    const shellArgs = process.platform === 'win32' ? [] : ['-l'] // '-l' starts zsh as a login shell
+    const tmuxSessionName = 'DROPTERM' // Define the tmux session name
+    const shellArgs =
+      process.platform === 'win32' ? [] : ['-l', '-c', `tmux new-session -A -s ${tmuxSessionName}`] // '-l' starts zsh as a login shell and attaches or creates a named tmux session
 
     const terminal = pty.spawn(shellPath, shellArgs, {
       name: 'xterm-color',
@@ -103,7 +105,11 @@ function createWindow(): void {
         x: activeDisplay.workArea.x + Math.floor(width / 2),
         y: activeDisplay.workArea.y
       })
+      mainWindow.setVisibleOnAllWorkspaces(true) // Ensure window appears on the current workspace
       mainWindow.show()
+      setTimeout(() => {
+        mainWindow?.setVisibleOnAllWorkspaces(false) // Reset the property to avoid side effects
+      }, 100) // Delay resetting to ensure it applies after the window is visible
     }
   }
 }
