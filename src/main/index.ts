@@ -136,6 +136,11 @@ let shortcutRegistered = false
 app.whenReady().then(() => {
   electronApp.setAppUserModelId('com.electron')
 
+  // Hide the dock icon on macOS
+  if (process.platform === 'darwin') {
+    app.dock.hide()
+  }
+
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
   })

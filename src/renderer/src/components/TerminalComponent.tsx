@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { Terminal } from '@xterm/xterm'
 import { FitAddon } from '@xterm/addon-fit'
 import { ClipboardAddon } from '@xterm/addon-clipboard'
+import { ImageAddon } from '@xterm/addon-image'
 import '@xterm/xterm/css/xterm.css'
 
 const TerminalComponent = (): JSX.Element => {
@@ -9,6 +10,19 @@ const TerminalComponent = (): JSX.Element => {
   const fitAddon = new FitAddon()
   const clipboardAddon = new ClipboardAddon()
   const terminal = useRef<Terminal | null>(null)
+
+  const imageAddon = new ImageAddon({
+    enableSizeReports: true,
+    // pixelLimit: 16777216,
+    sixelSupport: true,
+    sixelScrolling: true,
+    sixelPaletteLimit: 256,
+    // sixelSizeLimit: 25000000,
+    // storageLimit: 128,
+    showPlaceholder: true,
+    iipSupport: true,
+    // iipSizeLimit: 20000000
+  })
 
   useEffect(() => {
     // Add this style block at the beginning of the useEffect
@@ -36,6 +50,7 @@ const TerminalComponent = (): JSX.Element => {
     })
     terminal.current.loadAddon(fitAddon)
     terminal.current.loadAddon(clipboardAddon)
+    terminal.current.loadAddon(imageAddon)
     if (terminalRef.current) {
       terminal.current.open(terminalRef.current)
       terminal.current.focus() // Add this line to focus the terminal

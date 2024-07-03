@@ -1,6 +1,6 @@
 {
   "name": "dropterm",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "An Electron application with React and TypeScript",
   "main": "./out/main/index.js",
   "author": "example.com",
@@ -27,6 +27,7 @@
     "@radix-ui/react-slot": "^1.1.0",
     "@xterm/addon-clipboard": "^0.1.0",
     "@xterm/addon-fit": "^0.10.0",
+    "@xterm/addon-image": "^0.8.0",
     "@xterm/xterm": "^5.5.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
