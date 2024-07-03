@@ -20,7 +20,7 @@ const TerminalComponent = (): JSX.Element => {
     // sixelSizeLimit: 25000000,
     // storageLimit: 128,
     showPlaceholder: true,
-    iipSupport: true,
+    iipSupport: true
     // iipSizeLimit: 20000000
   })
 
