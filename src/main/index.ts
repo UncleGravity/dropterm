@@ -21,6 +21,11 @@ let tray: Tray | null = null
 let mainWindow: BrowserWindow | null = null
 
 function createWindow(): void {
+  // Hide the dock icon on macOS every time a window is created or shown
+  if (process.platform === 'darwin') {
+    app.dock.hide()
+  }
+
   const activeDisplay = screen.getDisplayNearestPoint(screen.getCursorScreenPoint())
   const { width, height } = activeDisplay.workArea
 
@@ -43,6 +48,9 @@ function createWindow(): void {
     })
 
     mainWindow.on('ready-to-show', () => {
+      if (process.platform === 'darwin') {
+        app.dock.hide() // Ensure dock icon is hidden when window is ready to show
+      }
       mainWindow?.show()
     })
 
@@ -65,7 +73,7 @@ function createWindow(): void {
       process.platform === 'win32' ? [] : ['-l', '-c', `tmux new-session -A -s ${tmuxSessionName}`] // '-l' starts zsh as a login shell and attaches or creates a named tmux session
 
     const terminal = pty.spawn(shellPath, shellArgs, {
-      name: 'xterm-color',
+      name: 'xterm-256color',
       cols: 80,
       rows: 24,
       cwd: process.env.HOME,
@@ -110,6 +118,9 @@ function createWindow(): void {
         y: activeDisplay.workArea.y
       })
       mainWindow.setVisibleOnAllWorkspaces(true) // Ensure window appears on the current workspace
+      if (process.platform === 'darwin') {
+        app.dock.hide() // Hide the dock icon again before showing the window
+      }
       mainWindow.show()
       setTimeout(() => {
         mainWindow?.setVisibleOnAllWorkspaces(false) // Reset the property to avoid side effects
